@@ -1,26 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
-
+import { SubscriptionItem, SubscriptionModel } from './subscription.model';
+import { v4 } from 'uuid';
 @Injectable()
 export class SubscriptionsService {
-  create(createSubscriptionDto: CreateSubscriptionDto) {
-    return 'This action adds a new subscription';
+  async create(
+    createSubscriptionDto: CreateSubscriptionDto,
+  ): Promise<SubscriptionItem> {
+    createSubscriptionDto.id = v4();
+    const payload = {
+      ...createSubscriptionDto,
+      id: createSubscriptionDto.id,
+      endAt: new Date(createSubscriptionDto.endAt),
+    };
+    return SubscriptionModel.create(payload);
   }
 
   findAll() {
-    return `This action returns all subscriptions`;
+    return SubscriptionModel.scan().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} subscription`;
+  findOne(id: string) {
+    return SubscriptionModel.get({ id });
   }
 
-  update(id: number, updateSubscriptionDto: UpdateSubscriptionDto) {
-    return `This action updates a #${id} subscription`;
+  update(id: string, updateSubscriptionDto: UpdateSubscriptionDto) {
+    const updateData = {
+      ...updateSubscriptionDto,
+      endAt: new Date(updateSubscriptionDto.endAt),
+    };
+    return SubscriptionModel.update({ id }, updateData);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} subscription`;
+  remove(id: string) {
+    return SubscriptionModel.delete({ id });
   }
 }
