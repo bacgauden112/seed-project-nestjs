@@ -8,10 +8,9 @@ export class SubscriptionsService {
   async create(
     createSubscriptionDto: CreateSubscriptionDto,
   ): Promise<SubscriptionItem> {
-    createSubscriptionDto.id = v4();
     const payload = {
       ...createSubscriptionDto,
-      id: createSubscriptionDto.id,
+      id: v4(),
       endAt: new Date(createSubscriptionDto.endAt),
     };
     return SubscriptionModel.create(payload);
