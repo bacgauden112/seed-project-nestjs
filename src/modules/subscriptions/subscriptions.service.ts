@@ -1,38 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
-import { SubscriptionItem, SubscriptionModel } from './subscription.model';
-import { v4 } from 'uuid';
+import { Subscription } from 'src/entities/subscription.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 @Injectable()
 export class SubscriptionsService {
+  constructor(
+    @InjectRepository(Subscription)
+    private repo: Repository<Subscription>,
+  ) {}
   async create(
     createSubscriptionDto: CreateSubscriptionDto,
-  ): Promise<SubscriptionItem> {
+  ): Promise<Subscription> {
     const payload = {
       ...createSubscriptionDto,
-      id: v4(),
-      endAt: new Date(createSubscriptionDto.endAt),
+      activationDate: new Date(createSubscriptionDto.activationDate),
     };
-    return SubscriptionModel.create(payload);
+    const newSubscription = await this.repo.create(createSubscriptionDto);
+    await this.repo.save(newSubscription);
+    return newSubscription;
   }
 
   findAll() {
-    return SubscriptionModel.scan().exec();
+    return this.repo.find();
   }
 
-  findOne(id: string) {
-    return SubscriptionModel.get({ id });
+  findOne(id: number) {
+    return this.repo.findOne({
+      where: { id },
+    });
   }
 
   update(id: string, updateSubscriptionDto: UpdateSubscriptionDto) {
-    const updateData = {
-      ...updateSubscriptionDto,
-      endAt: new Date(updateSubscriptionDto.endAt),
-    };
-    return SubscriptionModel.update({ id }, updateData);
+    return '';
   }
 
   remove(id: string) {
-    return SubscriptionModel.delete({ id });
+    return '';
   }
 }

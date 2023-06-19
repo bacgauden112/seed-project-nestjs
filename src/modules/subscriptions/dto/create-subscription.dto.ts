@@ -1,25 +1,17 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Usage } from '../types/subscription.type';
-
 export class CreateSubscriptionDto {
-  @ApiProperty()
+  id: number;
   mdn: string;
-  @ApiProperty()
-  voiceMo: Usage;
-  @ApiProperty()
-  voiceMt: Usage;
-  @ApiProperty()
-  voiceCf: Usage;
-  @ApiProperty()
-  textMo: Usage;
-  @ApiProperty()
-  textMt: Usage;
-  @ApiProperty()
-  vm: Usage;
-  @ApiProperty()
-  data: Usage;
-  @ApiProperty()
-  operatorId: number;
-  @ApiProperty()
-  endAt: string;
+  subscriberId: number;
+  tariffCode: string;
+  planCode: string;
+  MRCPrice: number;
+  operatorName: string;
+  voiceMoInitial: number;
+  voiceMtInitial: number;
+  voiceCfInitial: number;
+  smsMoInitial: number;
+  smsMtInitial: number;
+  vmInitial: number;
+  dataInitial: number;
+  activationDate: Date;
 }
